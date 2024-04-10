@@ -97,4 +97,20 @@ public final class CssSchemaTest extends TestCase {
     assertTrue("left in float", cssFloat.literals.contains("left"));
   }
 
+   @Test
+  public static final void testStyleCasingWithoutAllowStyling() {
+	  String input = "<p><span style=\"font-family:Times New Roman,Times,serif;\">fourth line</span></p>";
+	  PolicyFactory factory = new HtmlPolicyBuilder().allowElements("p","span").allowAttributes("test","style").globally().toFactory();
+	  assertEquals(input, factory.sanitize(input));
+  }
+  
+  @Test
+  public static final void testStyleCasingWithAllowStyling() {
+	  String input = "<p><span style=\"font-family:Times New Roman,Times,serif;\">fourth line</span></p>";
+	  PolicyFactory factory = new HtmlPolicyBuilder().allowElements("p","span").allowAttributes("test","style").sanitizeGlobalStyles().globally().toFactory();
+	  assertEquals("<p><span style=\"font-family:&#39;times new roman&#39; , &#39;times&#39; , serif\">fourth line</span></p>"
+	  		, factory.sanitize(input));
+  }
+  
+
 }
