@@ -663,6 +663,19 @@ public class HtmlPolicyBuilderTest extends TestCase {
             input));
   }
 
+  @Test
+  public static final void testGlobalStyleWithoutSanitization() {
+	  PolicyFactory factory = new HtmlPolicyBuilder().allowElements("span").allowAttributes("test","style").globally().toFactory();
+  	  String input = "<span style=\"text-decoration-line: line-through;\">Strikethrough</span>";
+  	  assertEquals(factory.sanitize(input), input);
+  }
+  
+  @Test
+  public static final void testGlobalStyleWithSanitization() {
+	  PolicyFactory factory = new HtmlPolicyBuilder().allowElements("span").allowAttributes("test","style").sanitizeGlobalStyles().globally().toFactory();
+  	  String input = "<span style=\"text-decoration-line: line-through;\">Strikethrough</span>";
+  	  assertEquals("Strikethrough", factory.sanitize(input));
+  }
 
   @Test
   public final void testPostprocessors() {
