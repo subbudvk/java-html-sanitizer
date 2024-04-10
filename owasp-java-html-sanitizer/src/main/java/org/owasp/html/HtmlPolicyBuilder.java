@@ -874,10 +874,21 @@ public class HtmlPolicyBuilder {
   public final class AttributeBuilder {
     private final List<String> attributeNames;
     private AttributePolicy policy = AttributePolicy.IDENTITY_ATTRIBUTE_POLICY;
+    private boolean shouldSanitizeGlobalStyles = false;
 
     AttributeBuilder(List<? extends String> attributeNames) {
       this.attributeNames = j8().listCopyOf(attributeNames);
     }
+    
+  /**
+    * Determines whether allowAttributes("style").globally() should imply allowStyling()
+    * which sanitizes style attribute values
+    */
+    public AttributeBuilder sanitizeGlobalStyles() {
+	  	this.shouldSanitizeGlobalStyles = true;
+	  	return this;
+	  }
+
 
     /**
      * Filters and/or transforms the attribute values
@@ -967,7 +978,7 @@ public class HtmlPolicyBuilder {
      */
     @SuppressWarnings("synthetic-access")
     public HtmlPolicyBuilder globally() {
-      if (attributeNames.contains("style")) {
+      if (attributeNames.contains("style") && shouldSanitizeGlobalStyles) {
         allowStyling();
       }
       return HtmlPolicyBuilder.this.allowAttributesGlobally(
